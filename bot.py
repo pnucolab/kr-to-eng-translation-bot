@@ -5,10 +5,10 @@ from pygtaw import wrapper
 
 class TranslateBot(object):
     def __init__(self, translate_key):
+        self.subscribe_all()
         self.translate_key = translate_key
         self.client = zulip.Client(os.environ['ZULIP_EMAIL'],
                                    os.environ['ZULIP_KEY'])
-        self.subscribe_all()
 
     def process_message(self, msg):
         content = msg['content'].split()
