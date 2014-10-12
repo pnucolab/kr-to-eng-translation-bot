@@ -17,18 +17,30 @@ class TranslateBot(object):
         if sender_email == os.environ['ZULIP_EMAIL']:
             return
 
-        if content[0] == 'translate':
+        if content[0] == 'translate' or
+           (content[0] == '@**translation' and content[1] == 'translate'):
             target = content[1].capitalize()
             query = content[2]
 
             pygtaw = wrapper.Client(self.translate_key)
             translation = pygtaw.translate(query, target)
 
-            self.client.send_message({
-                'type': 'private',
-                'to': msg['sender_email'],
-                'content': translation.translated_text
-            })
+
+            if msg['type'] == 'stream':
+                self.client.send_message({
+                    'type': 'stream',
+                    'subject': msg['subject'],
+                    'to': msg['display_recipient'],
+                    'content': translation.translated_text
+                })
+            elif msg['type'] == 'private':
+                self.client.send_message({
+                    'type': 'private',
+                    'to': msg['sender_email'],
+                    'content': translation.translated_text
+                })
+            else:
+                return
 
     def subscribe_all(self):
         response = requests.get('https://api.zulip.com/v1/streams',
