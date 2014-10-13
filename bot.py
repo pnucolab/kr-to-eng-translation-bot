@@ -17,7 +17,7 @@ class TranslateBot(object):
         if sender_email == os.environ['ZULIP_EMAIL']:
             return
 
-        if (content[0] == 'translate') or content[0] == '@**Translation**':
+        if content[0] == 'translate' or content[0] == '@**Translate**':
             target = content[1].capitalize()
             query = ' '.join(content[2:])
 
