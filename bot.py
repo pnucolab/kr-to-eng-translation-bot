@@ -5,10 +5,10 @@ from pygtaw import wrapper
 
 class TranslateBot(object):
     def __init__(self, translate_key):
-        self.subscribe_all()
         self.translate_key = translate_key
         self.client = zulip.Client(os.environ['ZULIP_EMAIL'],
                                    os.environ['ZULIP_KEY'])
+        self.subscribe_all()
 
     def process_message(self, msg):
         content = msg['content'].split()
@@ -17,10 +17,9 @@ class TranslateBot(object):
         if sender_email == os.environ['ZULIP_EMAIL']:
             return
 
-        if content[0] == 'translate' or
-           (content[0] == '@**translation' and content[1] == 'translate'):
+        if (content[0] == 'translate') or content[0] == '@**Translation**':
             target = content[1].capitalize()
-            query = content[2]
+            query = ' '.join(content[2:])
 
             pygtaw = wrapper.Client(self.translate_key)
             translation = pygtaw.translate(query, target)
@@ -48,9 +47,9 @@ class TranslateBot(object):
         )
 
         if response.status_code == 200:
-            self.client.add_subscriptions(
-                [{'name': stream_name} for stream_name in response.json()['streams']]
-            )
+            json = response.json()['streams']
+            streams = [{'name': stream['name']} for stream in json]
+            self.client.add_subscriptions(streams)
         else:
             raise Exception(response)
 
