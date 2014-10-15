@@ -19,7 +19,7 @@ class TranslateBot(object):
 
         if content[0] == 'translate' or content[0] == '@**Translate**':
             if content[1] in ['Chinese', 'Haitian']:
-                target = ' '.join(content[1:3]).capitalize()
+                target = ' '.join(content[1:3]).title()
                 query = ' '.join(content[3:])
             else:
                 target = content[1].capitalize()
