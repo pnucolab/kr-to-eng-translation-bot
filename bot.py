@@ -11,7 +11,8 @@ class TranslateBot(object):
         self.subscribe_all()
 
     def process_message(self, msg):
-        content = msg['content'].split()
+        decoded_content = msg['content'].decode(encoding='utf-8')
+        content = decoded_content.split()
         sender_email = msg['sender_email']
 
         if sender_email == os.environ['ZULIP_EMAIL']:
