@@ -19,15 +19,10 @@ class TranslateBot(object):
             return
 
         if content[0] == 'translate' or content[0] == '@**Translate**':
-            if content[1] in ['Chinese', 'Haitian']:
-                target = ' '.join(content[1:3]).title()
-                query = ' '.join(content[3:])
-            else:
-                target = content[1].capitalize()
-                query = ' '.join(content[2:])
+            target, query = self.handle_chinese_and_haitian(content[1])
             translation = self.get_translation(query, target)
-            translated_text = self.unescape_html_entities(translation.translated_text)
-
+            translated_text = self.handle_mentions(translation.translated_text)
+            translated_text = self.unescape_html_entities(translated_text)
             if msg['type'] == 'stream':
                 self.client.send_message({
                     'type': 'stream',
@@ -42,13 +37,24 @@ class TranslateBot(object):
                     'content': translated_text
                 })
 
+    def handle_chinese_and_haitian(self, content):
+        if content[0] in ['Chinese', 'Haitian']:
+            target = ' '.join(content[0:2]).title()
+            query = ' '.join(content[2:])
+            return target, query
+        else:
+            target = content[0].capitalize()
+            query = ' '.join(content[1:])
+            return target, query
+
+    def handle_mentions(self, translation):
+        return translation.replace('@ ** ', '@**').replace(' **', '**')
+
     def get_translation(self, query, target):
         try:
             return self.pygtaw.translate(query, target)
         except KeyError:
             target = 'English'
-            print 'I could not get the target language you\
-            requested. Returning {} translation: '.format(target)
             return self.pygtaw.translate(query, target)
 
     def unescape_html_entities(self, translated_text):
