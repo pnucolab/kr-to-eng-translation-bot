@@ -1,6 +1,7 @@
 import zulip
 import requests
 import os
+import HTMLParser
 from pygtaw import wrapper
 
 class TranslateBot(object):
@@ -11,7 +12,9 @@ class TranslateBot(object):
         self.subscribe_all()
 
     def process_message(self, msg):
-        content = msg['content'].split()
+        html_parser = HTMLParser.HTMLParser()
+        content = html_parser.unescape(msg['content'])
+        content = content.split()
         sender_email = msg['sender_email']
 
         if sender_email == os.environ['ZULIP_EMAIL']:
@@ -46,7 +49,9 @@ class TranslateBot(object):
             return self.pygtaw.translate(query, target)
         except KeyError:
             target = 'English'
-            return self.pygtaw.translate(query, target)
+            return 'Could not identify target language.\
+                    Translating into default language: {}.\
+                    Translated text: {}'.format(target, self.pygtaw.translate(query, target))
 
 
     def subscribe_all(self):
