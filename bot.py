@@ -26,25 +26,23 @@ class TranslateBot(object):
                 target = content[1].capitalize()
                 query = ' '.join(content[2:])
             translation = self.get_translation(query, target)
-
+            translated_text = unescape_html_entities(translation)
 
             if msg['type'] == 'stream':
                 self.client.send_message({
                     'type': 'stream',
                     'subject': msg['subject'],
                     'to': msg['display_recipient'],
-                    'content': translation.translated_text
+                    'content': translated_text
                 })
             else:
                 self.client.send_message({
                     'type': 'private',
                     'to': msg['sender_email'],
-                    'content': translation.translated_text
+                    'content': translated_text
                 })
 
     def get_translation(self, query, target):
-        html_parser = HTMLParser.HTMLParser()
-        query = html_parser.unescape(query)
         try:
             return self.pygtaw.translate(query, target)
         except KeyError:
@@ -52,6 +50,13 @@ class TranslateBot(object):
             return 'Could not identify target language.\
                     Translating into default language: {}.\
                     Translated text: {}'.format(target, self.pygtaw.translate(query, target))
+
+    def unescape_html_entities(self, translated_text):
+        html_parser = HTMLParser.HTMLParser()
+        try:
+            return html_parser.unescape(translated_text)
+        except AttributeError:
+            return translated_text
 
 
     def subscribe_all(self):
