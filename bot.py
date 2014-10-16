@@ -47,9 +47,9 @@ class TranslateBot(object):
             return self.pygtaw.translate(query, target)
         except KeyError:
             target = 'English'
-            return 'Could not identify target language.\
-                    Translating into default language: {}.\
-                    Translated text: {}'.format(target, self.pygtaw.translate(query, target))
+            print 'I could not get the target language you\
+            requested. Returning {} translation: '.format(target)
+            return self.pygtaw.translate(query, target)
 
     def unescape_html_entities(self, translated_text):
         html_parser = HTMLParser.HTMLParser()
