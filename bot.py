@@ -12,7 +12,6 @@ class TranslateBot(object):
         self.subscribe_all()
 
     def process_message(self, msg):
-        html_parser = HTMLParser.HTMLParser()
         content = msg['content'].split()
         sender_email = msg['sender_email']
 
@@ -34,16 +33,18 @@ class TranslateBot(object):
                     'type': 'stream',
                     'subject': msg['subject'],
                     'to': msg['display_recipient'],
-                    'content': html_parser.unescape(translation.translated_text)
+                    'content': translation.translated_text
                 })
             else:
                 self.client.send_message({
                     'type': 'private',
                     'to': msg['sender_email'],
-                    'content': html_parser.unescape(translation.translated_text)
+                    'content': translation.translated_text
                 })
 
     def get_translation(self, query, target):
+        html_parser = HTMLParser.HTMLParser()
+        query = html_parser.unescape(query)
         try:
             return self.pygtaw.translate(query, target)
         except KeyError:
