@@ -19,7 +19,7 @@ class TranslateBot(object):
             return
 
         if content[0] == 'translate' or content[0] == '@**Translate**':
-            target, query = self.handle_chinese_and_haitian(content[1])
+            target, query = self.handle_chinese_and_haitian(content[1:])
             translation = self.get_translation(query, target)
             translated_text = self.handle_mentions(translation.translated_text)
             translated_text = self.unescape_html_entities(translated_text)
