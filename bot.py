@@ -25,7 +25,7 @@ class TranslateBot(object):
             else:
                 target = content[1].capitalize()
                 query = ' '.join(content[2:])
-            translation = self.get_translation(query, target)
+            translation = self.get_translation(query, target).translated_text
             translated_text = self.unescape_html_entities(translation)
 
             if msg['type'] == 'stream':
