@@ -13,8 +13,7 @@ class TranslateBot(object):
 
     def process_message(self, msg):
         html_parser = HTMLParser.HTMLParser()
-        content = html_parser.escape(msg['content'])
-        content = content.split()
+        content = msg['content'].split()
         sender_email = msg['sender_email']
 
         if sender_email == os.environ['ZULIP_EMAIL']:
@@ -35,13 +34,13 @@ class TranslateBot(object):
                     'type': 'stream',
                     'subject': msg['subject'],
                     'to': msg['display_recipient'],
-                    'content': translation.translated_text
+                    'content': html_parser.unescape(translation.translated_text)
                 })
             else:
                 self.client.send_message({
                     'type': 'private',
                     'to': msg['sender_email'],
-                    'content': translation.translated_text
+                    'content': html_parser.unescape(translation.translated_text)
                 })
 
     def get_translation(self, query, target):
