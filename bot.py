@@ -13,7 +13,7 @@ class TranslateBot(object):
 
     def process_message(self, msg):
         html_parser = HTMLParser.HTMLParser()
-        content = html_parser.unescape(msg['content'])
+        content = html_parser.escape(msg['content'])
         content = content.split()
         sender_email = msg['sender_email']
 
