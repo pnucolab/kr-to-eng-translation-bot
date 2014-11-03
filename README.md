@@ -1,6 +1,8 @@
 translation-bot
 ---------------
-For Zulip.
+For Zulip. I also blogged about the making of translation-bot [here](http://9.svbtle.com/making-of-bot).
+
+Looking for [weather-bot](https://github.com/stephsamson/weather-bot)?
 
 usage
 -----
