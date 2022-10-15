@@ -21,16 +21,13 @@ class TranslateBot(object):
         if self.check_hangul(content):
             translated_text = self.translate(content)
             translated_text = (f'**{msg["sender_full_name"]}** said:\n```` quote\n{content}\n````\n{translated_text}')
-        else:
-            translated_text = msg['content'] # repeat if no hangul
-
-        if msg['type'] == 'stream':
-            self.client.send_message({
-                'type': 'stream',
-                'subject': msg['subject'],
-                'to': msg['display_recipient'],
-                'content': translated_text
-            })
+            if msg['type'] == 'stream':
+                self.client.send_message({
+                    'type': 'stream',
+                    'subject': msg['subject'],
+                    'to': msg['display_recipient'],
+                    'content': translated_text
+                })
 
     def translate(self, text, source="ko", target="en"):
         s = self.papago.translate(text, source, target)
